@@ -25,7 +25,7 @@ export const HAPTIC_CUES: HapticCue[] = [
   {
     id: 'cue-whitening',
     startTime: 21,
-    endTime: 22.2,
+    endTime: 22.6, // Extended to 22.6 to allow full 1500ms pattern to complete
     label: 'Whitening Pulse',
     description: 'Triple-burst polishing action',
     vibrationPattern: [300, 200, 300, 200, 300, 200]
@@ -40,7 +40,7 @@ export const HAPTIC_CUES: HapticCue[] = [
   {
     id: 'cue-closing-burst',
     startTime: 38,
-    endTime: 38.1,
+    endTime: 38.3, // Extended to 300ms to ensure hardware spin-up
     label: 'Closing Burst',
     description: 'Final activation burst'
   }

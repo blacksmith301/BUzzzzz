@@ -8,6 +8,10 @@ export const HapticVideoPlayer: React.FC = () => {
   const syncLoopRef = useRef<number | null>(null);
   const controlsTimeoutRef = useRef<number>(0);
   
+  // We need a ref to track activeCue inside the requestAnimationFrame loop
+  // to avoid stale closures without recreating the function every frame.
+  const activeCueRef = useRef<string | null>(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -97,27 +101,36 @@ export const HapticVideoPlayer: React.FC = () => {
     // Find if we are currently inside a haptic zone
     const currentCue = HAPTIC_CUES.find(cue => t >= cue.startTime && t < cue.endTime);
 
+    // logic using refs to ensure we don't have stale state inside the animation frame
     if (currentCue) {
-      // If we just entered a cue (or switched cues), trigger vibration
-      if (activeCue !== currentCue.id) {
-        setActiveCue(currentCue.id);
-        // Only attempt vibration if supported (and not iOS just to be safe, though API check handles it usually)
+      if (activeCueRef.current !== currentCue.id) {
+        // New cue detected
+        activeCueRef.current = currentCue.id;
+        setActiveCue(currentCue.id); // Update UI
+        
+        // Trigger Vibration
         if (navigator.vibrate && !isIOS) {
             if (currentCue.vibrationPattern) {
-                // Use specific pattern if defined (e.g., [300, 200, 300])
+                // Use specific pattern if defined
                 navigator.vibrate(currentCue.vibrationPattern);
             } else {
-                // Continuous vibration for the remainder of the cue
-                const durationMs = (currentCue.endTime - t) * 1000;
-                navigator.vibrate(Math.max(0, durationMs));
+                // Continuous vibration fallback
+                // We add a buffer to ensure it doesn't cut out too early
+                const durationMs = (currentCue.endTime - currentCue.startTime) * 1000;
+                navigator.vibrate(durationMs);
             }
         }
       }
     } else {
-      // If we were in a cue but now we are not
-      if (activeCue) {
-        setActiveCue(null);
-        if (navigator.vibrate) navigator.vibrate(0); // Stop immediately
+      // No current cue
+      if (activeCueRef.current) {
+        // We just exited a cue
+        activeCueRef.current = null;
+        setActiveCue(null); // Update UI
+        
+        if (navigator.vibrate) {
+            navigator.vibrate(0); // Stop vibration
+        }
       }
     }
 
@@ -125,7 +138,7 @@ export const HapticVideoPlayer: React.FC = () => {
     if (!videoRef.current.paused && !videoRef.current.ended) {
       syncLoopRef.current = requestAnimationFrame(handleSync);
     }
-  }, [activeCue, isIOS]);
+  }, [isIOS]); // Removed activeCue from dependencies to keep function stable
 
   // Start/Stop Loop based on play state
   useEffect(() => {
@@ -135,6 +148,7 @@ export const HapticVideoPlayer: React.FC = () => {
       if (syncLoopRef.current) cancelAnimationFrame(syncLoopRef.current);
       if (navigator.vibrate) navigator.vibrate(0);
       setActiveCue(null);
+      activeCueRef.current = null;
     }
     return () => {
       if (syncLoopRef.current) cancelAnimationFrame(syncLoopRef.current);
