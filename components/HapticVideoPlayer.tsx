@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Play, Pause, RefreshCw, Volume2, VolumeX, Loader2, Maximize2, Minimize2, AlertTriangle } from 'lucide-react';
 import { HAPTIC_CUES, VIDEO_URL } from '../constants';
+import { Timeline } from './Timeline';
 
 export const HapticVideoPlayer: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -166,6 +167,16 @@ export const HapticVideoPlayer: React.FC = () => {
     }
   };
 
+  const handleSeek = (time: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+    if (navigator.vibrate) navigator.vibrate(0);
+    setActiveCue(null);
+    activeCueRef.current = null;
+  };
+
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
@@ -247,6 +258,8 @@ export const HapticVideoPlayer: React.FC = () => {
         <div className={`absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-black/90 via-black/70 to-transparent z-30 transition-all duration-500 ease-out flex flex-col gap-3 
             ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>
             
+            <Timeline currentTime={currentTime} duration={duration} onSeek={handleSeek} />
+
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <button onClick={togglePlay} className="text-white hover:text-cyan-400 transition">
