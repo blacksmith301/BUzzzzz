@@ -7,6 +7,8 @@ export const HAPTIC_CUES: HapticCue[] = [
     endTime: 6.2,
     label: 'Activation',
     description: 'Initial activation burst'
+    vibrationPattern: [300]
+
   },
   {
     id: 'cue-intense',
