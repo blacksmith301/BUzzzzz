@@ -3,11 +3,10 @@ import { HapticCue } from './types';
 export const HAPTIC_CUES: HapticCue[] = [
   {
     id: 'cue-start-burst',
-    startTime: 6.0,
-    endTime: 6.3,
+    startTime: 6.8,
+    endTime: 7.1,
     label: 'Activation',
-    description: 'Initial activation burst',
-    vibrationPattern: [200]
+    description: 'Initial activation burst'
   },
   {
     id: 'cue-intense',
@@ -21,13 +20,12 @@ export const HAPTIC_CUES: HapticCue[] = [
     startTime: 15.5,
     endTime: 17,
     label: 'Pulse Mode',
-    description: 'Rapid rhythmic bursts',
-    vibrationPattern: [200, 100, 200, 100, 200, 100, 200, 100, 200]
+    description: 'Rapid rhythmic bursts'
   },
   {
     id: 'cue-whitening',
     startTime: 21,
-    endTime: 22.6, // Extended to 22.6 to allow full 1500ms pattern to complete
+    endTime: 22.2,
     label: 'Whitening Pulse',
     description: 'Triple-burst polishing action',
     vibrationPattern: [300, 200, 300, 200, 300, 200]
@@ -42,10 +40,9 @@ export const HAPTIC_CUES: HapticCue[] = [
   {
     id: 'cue-closing-burst',
     startTime: 38,
-    endTime: 38.3, // Extended to 300ms to ensure hardware spin-up
+    endTime: 38.1,
     label: 'Closing Burst',
-    description: 'Final activation burst',
-    vibrationPattern: [300]
+    description: 'Final activation burst'
   }
 ];
 
