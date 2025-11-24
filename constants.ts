@@ -6,9 +6,8 @@ export const HAPTIC_CUES: HapticCue[] = [
     startTime: 6.0,
     endTime: 6.2,
     label: 'Activation',
-    description: 'Initial activation burst'
-    vibrationPattern: [300]
-
+    description: 'Initial activation burst',
+    vibrationPattern: [200]
   },
   {
     id: 'cue-intense',
@@ -22,7 +21,8 @@ export const HAPTIC_CUES: HapticCue[] = [
     startTime: 15.5,
     endTime: 17,
     label: 'Pulse Mode',
-    description: 'Rapid rhythmic bursts'
+    description: 'Rapid rhythmic bursts',
+    vibrationPattern: [200, 100, 200, 100, 200, 100, 200, 100, 200]
   },
   {
     id: 'cue-whitening',
@@ -44,7 +44,8 @@ export const HAPTIC_CUES: HapticCue[] = [
     startTime: 38,
     endTime: 38.3, // Extended to 300ms to ensure hardware spin-up
     label: 'Closing Burst',
-    description: 'Final activation burst'
+    description: 'Final activation burst',
+    vibrationPattern: [300]
   }
 ];
 
